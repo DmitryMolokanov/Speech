@@ -22,16 +22,24 @@ const CollectionsContainer = ({
 
   const selectCollection = (item: string[]) => {
     setArrWord(item);
+
     navigate("/");
   };
 
-  const changeCollection = (item: string[]) => {
+  const changeCollection = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    item: string[]
+  ) => {
+    e.stopPropagation();
     setIsModal(true);
-    console.log(item);
     setChangingCollection(item);
   };
 
-  const deleteCollection = (item: string[]) => {
+  const deleteCollection = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    item: string[]
+  ) => {
+    e.stopPropagation();
     const newCollections = collections.filter(
       (collection) => JSON.stringify(collection) !== JSON.stringify(item)
     );
@@ -53,7 +61,7 @@ const CollectionsContainer = ({
               flexDirection={"column"}
               sx={{ border: "2px solid #4169e1 ", borderRadius: "7px", m: 1 }}
               style={{ display: "flex", alignItems: "center" }}
-              onClick={() => selectCollection(item)}
+              onClick={(e) => selectCollection(item)}
             >
               {item.map((word) => {
                 return <div>{word}</div>;
@@ -62,15 +70,15 @@ const CollectionsContainer = ({
                 <IconButton
                   color="primary"
                   sx={{ m: 1 }}
-                  onClick={() => changeCollection(item)}
+                  onClick={(e) => changeCollection(e, item)}
                 >
                   <Edit />
                 </IconButton>
                 <IconButton
                   color="error"
                   sx={{ m: 1 }}
-                  onClick={() => {
-                    deleteCollection(item);
+                  onClick={(e) => {
+                    deleteCollection(e, item);
                   }}
                 >
                   <Delete />
