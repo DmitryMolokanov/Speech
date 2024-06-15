@@ -46,7 +46,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
           const speackDefinition = new SpeechSynthesisUtterance(definition);
           speackDefinition.lang = "en-US";
           speechSynthesis.speak(speackDefinition);
-        }, 500);
+        }, 1500);
         index++;
       } else setInProgress(false);
     }, 7000);
