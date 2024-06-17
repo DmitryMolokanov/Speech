@@ -18,6 +18,7 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
     const navigate = useNavigate()
     const open = Boolean(anchorEl)
 
+
     const handlMenuOpen = async (e: any) => {
         const word = e.currentTarget.textContent
         setAnchorEl(e.currentTarget)
@@ -28,6 +29,7 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
     }
 
     const handlMenuClose = () => {
+        setCurWord('')
         setAnchorEl(null)
     }
 
@@ -36,14 +38,6 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
         console.log(info)
         handlMenuClose()
     }
-
-
-
-    useEffect(() => {
-        console.log(info
-
-        )
-    })
 
 
     return (
@@ -56,7 +50,7 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
                 <Grid container width={'40vw'} flexDirection={'column'} >
                     {detailsCollection.map((word) =>
 
-                        <Button variant='outlined' onClick={(e) => handlMenuOpen(e)}
+                        <Button variant={curWord === word ? 'contained' : 'outlined'} onClick={(e) => handlMenuOpen(e)}
                             sx={{ maxWidth: '40vw', overflow: 'hidden' }}>{word}
                         </Button>)}
 

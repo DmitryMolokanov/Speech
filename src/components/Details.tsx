@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Typography, Box } from '@mui/material';
+import { Grid, Typography, Box, Button } from '@mui/material';
 import { IMeanings } from '../types';
 
 interface DetailsProps {
@@ -19,6 +19,7 @@ const Details = ({ info }: DetailsProps) => {
                                 {item.definitions.map((definition) => {
                                     return (<Box padding={1} width={'91%'} sx={{ borderTop: '1px solid lightGray' }}>
                                         <Typography color={'#27292b'}>{definition.definition}</Typography>
+                                        <Button size='small'>aaa</Button>
                                     </Box>)
                                 })}
                             </Grid>)
