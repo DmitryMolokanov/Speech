@@ -6,9 +6,10 @@ import CollectionsContainer from "../components/CollectionsContainer";
 
 interface CollectionsProps {
   setArrWord: (el: string[]) => void;
+  setDetailsCollection: (el: string[]) => void
 }
 
-const Collections = ({ setArrWord }: CollectionsProps) => {
+const Collections = ({ setArrWord, setDetailsCollection }: CollectionsProps) => {
   const [collections, setCollections] = useState<string[][]>([]);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const Collections = ({ setArrWord }: CollectionsProps) => {
             collections={collections}
             setCollections={setCollections}
             setArrWord={setArrWord}
+            setDetailsCollection={setDetailsCollection}
           />
         </div>
       ) : (

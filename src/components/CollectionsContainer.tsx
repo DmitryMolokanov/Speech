@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Grid, IconButton, Modal } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, List } from "@mui/icons-material";
 import CreateCollectionForm from "./CreateCollectionForm";
 
 interface CollectionsContainerProps {
   collections: string[][];
   setArrWord: (el: string[]) => void;
   setCollections: (el: string[][]) => void;
+  setDetailsCollection: (el: string[]) => void
 }
 
 const CollectionsContainer = ({
   collections,
   setCollections,
   setArrWord,
+  setDetailsCollection
 }: CollectionsContainerProps) => {
   const [changingCollection, setChangingCollection] = useState<string[]>([]);
   const [isModal, setIsModal] = useState(false);
@@ -25,6 +27,12 @@ const CollectionsContainer = ({
 
     navigate("/");
   };
+
+  const showDetailsCollection = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: string[]) => {
+    e.stopPropagation();
+    navigate('/details-collection')
+    setDetailsCollection(item)
+  }
 
   const changeCollection = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -49,19 +57,18 @@ const CollectionsContainer = ({
   return (
     <Grid
       container
-      spacing={2}
       style={{ display: "flex", justifyContent: "center" }}
     >
       {collections.length > 0 &&
         collections.map((item) => {
           return (
             <Box
-              width={150}
+              width={160}
               display={"flex"}
               flexDirection={"column"}
               sx={{ border: "2px solid #4169e1 ", borderRadius: "7px", m: 1 }}
               style={{ display: "flex", alignItems: "center" }}
-              onClick={(e) => selectCollection(item)}
+              onClick={() => selectCollection(item)}
             >
               {item.map((word) => {
                 return <div>{word}</div>;
@@ -70,6 +77,12 @@ const CollectionsContainer = ({
                 <IconButton
                   color="primary"
                   sx={{ m: 1 }}
+                  onClick={(e) => { showDetailsCollection(e, item) }}
+                >
+                  <List />
+                </IconButton>
+                <IconButton
+                  color="primary"
                   onClick={(e) => changeCollection(e, item)}
                 >
                   <Edit />

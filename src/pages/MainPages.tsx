@@ -36,9 +36,9 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         // установить слово, которое будет отображено
         setWord(result[0].word);
         // проверить и установить озвучку слова
-        if (result[0].phonetics[2]) {
-          setWordAudio(result[0].phonetics[2].audio);
-        } else setWordAudio(result[0].phonetics[1].audio);
+        result[0].phonetics.some((el) => {
+          if (el.audio) return setWordAudio(el.audio)
+        })
         // следующая итерация
         const definition = result[0].meanings[0].definitions[0].definition;
         setDefinitions(definition);
@@ -74,11 +74,12 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   };
 
   const stop = () => {
-    setInProgress(false);
-    setWord("");
-    setDefinitions("");
     clearInterval(mainInterval);
     speechSynthesis.cancel();
+    setInProgress(false);
+    setIsLoop(false)
+    setWord("");
+    setDefinitions("");
   };
 
   const loop = () => {
@@ -88,7 +89,8 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   // запуск бесконечного повторения
   useEffect(() => {
     if (!inProgress && isLoop) {
-      stop();
+      clearInterval(mainInterval);
+      speechSynthesis.cancel();
       start();
     }
   }, [isLoop, inProgress]);

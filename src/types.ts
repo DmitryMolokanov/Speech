@@ -19,3 +19,12 @@ export interface IMeanings {
   partOfSpeech: string;
   synonyms: Array<string>;
 }
+export interface IDefinitions {
+  definitions: [
+    {
+      antonyms: Array<string>;
+      definition: string;
+      synonyms: Array<string>;
+    }
+  ];
+}

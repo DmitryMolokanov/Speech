@@ -84,6 +84,7 @@ const CreateCollectionForm = ({
               size="small"
               sx={{ mt: 1 }}
               value={word}
+              autoFocus={true}
               onChange={(e) => {
                 addNewWord(index, e.target.value);
               }}
