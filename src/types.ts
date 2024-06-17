@@ -13,6 +13,7 @@ export interface IMeanings {
     {
       antonyms: Array<string>;
       definition: string;
+      example: string;
       synonyms: Array<string>;
     }
   ];
