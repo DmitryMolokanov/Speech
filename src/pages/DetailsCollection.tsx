@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Header from "../components/Header";
-import { IconButton, Grid, Button } from "@mui/material";
+import {
+  IconButton,
+  Grid,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from "@mui/material";
+
 import { ArrowBackIos } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { IDefinitions, IMeanings, IWord } from "../types";
+import { IWord } from "../types";
 import Details from "../components/Details";
 
 interface DetailsCollectionProps {
@@ -15,16 +22,17 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
   const [curWord, setCurWord] = useState<string>("");
   const navigate = useNavigate();
 
-  const handlMenuOpen = async (e: any) => {
-    const word = e.currentTarget.textContent;
+  const handlMenuOpen = useCallback(async () => {
     const response = await fetch(
-      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${curWord}`
     );
     const result = await response.json();
     setInfo(result);
+  }, [curWord]);
 
-    setCurWord(word);
-  };
+  useEffect(() => {
+    if (curWord) handlMenuOpen();
+  }, [curWord, handlMenuOpen]);
 
   return (
     <div>
@@ -38,14 +46,19 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
       </IconButton>
       <Grid container gap={1} sx={{ p: 1 }}>
         <Grid container flexDirection={"column"}>
-          {detailsCollection.map((word) => (
-            <Button
-              variant={curWord === word ? "contained" : "outlined"}
-              onClick={(e) => handlMenuOpen(e)}
-            >
-              {word}
-            </Button>
-          ))}
+          <Select
+            sx={{ textAlign: "center", fontWeight: 700, fontSize: "20px" }}
+            value={curWord}
+            onChange={(e: SelectChangeEvent) => {
+              return setCurWord(e.target.value);
+            }}
+          >
+            {detailsCollection.map((word) => (
+              <MenuItem key={word} value={word}>
+                {word}
+              </MenuItem>
+            ))}
+          </Select>
         </Grid>
         <Details info={info} />
       </Grid>

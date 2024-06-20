@@ -21,6 +21,25 @@ const Details = ({ info }: DetailsProps) => {
   return (
     <div>
       {info ? (
+        <Grid container display={"flex"} justifyContent={"center"}>
+          {info[0].phonetics.map((item) =>
+            item.audio ? (
+              <Button
+                variant="contained"
+                sx={{ m: 1 }}
+                onClick={() => {
+                  const audio = new Audio(item.audio);
+                  audio.play();
+                }}
+              >
+                audio
+              </Button>
+            ) : null
+          )}
+        </Grid>
+      ) : null}
+
+      {info ? (
         <Grid
           width={"96vw"}
           border={"1px solid"}
@@ -69,16 +88,6 @@ const Details = ({ info }: DetailsProps) => {
                                   {word}
                                 </Grid>
                               );
-                            })}
-                          </Grid>
-                          <Grid
-                            container
-                            spacing={1}
-                            display={"flex"}
-                            sx={{ mt: 1 }}
-                          >
-                            {item.phonetics.map((audio, index) => {
-                              return <Button>{`audio ${index + 1}`}</Button>;
                             })}
                           </Grid>
                         </AccordionDetails>
