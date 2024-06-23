@@ -74,7 +74,7 @@ const CreateCollectionForm = ({
         style={{
           backgroundColor: "white",
           padding: "20px 50px",
-          width: "50vw",
+          width: "80vw",
         }}
       >
         {words.map((word, index) => {

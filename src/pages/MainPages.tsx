@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Word from "../components/Word";
 import Definitions from "../components/Definitions";
 import Buttons from "../components/Buttons";
+import "./styles/mainPage.css";
 
 interface MainPagesProps {
   arrWord: string[];
@@ -50,7 +51,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         }, 1000);
         index++;
       } else setInProgress(false);
-    }, 1000);
+    }, 7000);
   };
 
   const start = async () => {
@@ -99,11 +100,22 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   return (
     <div>
       <Header />
-      <Word word={word} wordAudio={wordAudio}>
-        Word:
-      </Word>
-      <Definitions word={definitions}>Definitions:</Definitions>
-      <Buttons start={start} stop={stop} loop={loop} isLoop={isLoop} />
+      <div className="main-container">
+        <div className="ticker-container">
+          <div className="ticker-title">Current words:</div>
+          <div className="ticker-word-container">
+            {arrWord.map((word) => {
+              return <div className="ticker-word">{word}</div>;
+            })}
+          </div>
+        </div>
+
+        <Word word={word} wordAudio={wordAudio}>
+          Word:
+        </Word>
+        <Definitions word={definitions}>Definitions:</Definitions>
+        <Buttons start={start} stop={stop} loop={loop} isLoop={isLoop} />
+      </div>
     </div>
   );
 };
