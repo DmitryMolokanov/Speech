@@ -37,19 +37,20 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         setWord(result[0].word);
         // проверить и установить озвучку слова
         result[0].phonetics.some((el) => {
-          if (el.audio) return setWordAudio(el.audio)
-        })
+          if (el.audio) return setWordAudio(el.audio);
+        });
         // следующая итерация
         const definition = result[0].meanings[0].definitions[0].definition;
         setDefinitions(definition);
         setTimeout(() => {
           const speackDefinition = new SpeechSynthesisUtterance(definition);
           speackDefinition.lang = "en-US";
+          speackDefinition.rate = 0.8;
           speechSynthesis.speak(speackDefinition);
-        }, 1500);
+        }, 1000);
         index++;
       } else setInProgress(false);
-    }, 7000);
+    }, 1000);
   };
 
   const start = async () => {
@@ -77,7 +78,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
     clearInterval(mainInterval);
     speechSynthesis.cancel();
     setInProgress(false);
-    setIsLoop(false)
+    setIsLoop(false);
     setWord("");
     setDefinitions("");
   };

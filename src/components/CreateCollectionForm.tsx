@@ -46,6 +46,7 @@ const CreateCollectionForm = ({
   };
   // сохранить коллекцию
   const saveCollections = () => {
+    console.log(words);
     if (changingCollection) {
       const index = collections.findIndex(
         (arr) => JSON.stringify(arr) === JSON.stringify(changingCollection)
