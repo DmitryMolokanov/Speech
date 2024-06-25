@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Word from "../components/Word";
 import Definitions from "../components/Definitions";
 import Buttons from "../components/Buttons";
+import Ticker from "../components/Ticker";
 import "./styles/mainPage.css";
 
 interface MainPagesProps {
@@ -101,15 +102,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
     <div>
       <Header />
       <div className="main-container">
-        <div className="ticker-container">
-          <div className="ticker-title">Current words:</div>
-          <div className="ticker-word-container">
-            {arrWord.map((word) => {
-              return <div className="ticker-word">{word}</div>;
-            })}
-          </div>
-        </div>
-
+        <Ticker arrWord={arrWord} />
         <Word word={word} wordAudio={wordAudio}>
           Word:
         </Word>

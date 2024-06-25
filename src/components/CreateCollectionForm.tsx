@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormControl,
   TextField,
@@ -26,6 +26,7 @@ const CreateCollectionForm = ({
   const [words, setWords] = useState<string[]>(
     changingCollection ? changingCollection : [""]
   );
+  const [validation, setValidation] = useState<string[]>([]);
 
   // добавить инпут
   const addInput = () => {
@@ -44,6 +45,22 @@ const CreateCollectionForm = ({
     newWord.splice(index, 1);
     setWords(newWord);
   };
+  // проверить существование слова в словаре
+  const checkWord = async (word: string, index: number) => {
+    try {
+      const response = await fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+      );
+      const result = await response.json();
+    } catch (err) {
+      console.log(word);
+    }
+  };
+
+  useEffect(() => {
+    console.log(validation);
+  }, [validation]);
+
   // сохранить коллекцию
   const saveCollections = () => {
     console.log(words);
@@ -89,6 +106,12 @@ const CreateCollectionForm = ({
               onChange={(e) => {
                 addNewWord(index, e.target.value);
               }}
+              onBlur={() => checkWord(word, index)}
+              style={
+                validation.includes(word)
+                  ? { border: "1px solid red" }
+                  : { borderColor: "" }
+              }
               InputProps={{
                 // кнопка удаления
                 endAdornment: (
