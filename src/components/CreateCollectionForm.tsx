@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormControl,
   TextField,
@@ -6,8 +6,9 @@ import {
   Box,
   InputAdornment,
   IconButton,
+  StepperContext,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, SendAndArchiveRounded } from "@mui/icons-material";
 
 interface CreateCollectionFormProps {
   collections: string[][];
@@ -26,11 +27,36 @@ const CreateCollectionForm = ({
   const [words, setWords] = useState<string[]>(
     changingCollection ? changingCollection : [""]
   );
+  // отключить кнопку добавления при пустом инпуте при создании новой коллекции
+  const [prohibitAdd, setProhibitAdd] = useState<boolean>(changingCollection ? false : true)
+  const [sendErr, setSendErr] = useState(false)
+  const [errWord, setErrWord] = useState<string[]>([])
 
   // добавить инпут
   const addInput = () => {
+    setProhibitAdd(true)
     setWords([...words, ""]);
   };
+
+  // проверить слово в словаре 
+  const checkWord = async (word: string) => {
+    const response = await fetch(
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+    );
+    const result = await response.json()
+    if (result.title === 'No Definitions Found')
+      setErrWord([...errWord, word])
+  }
+
+  // управление инпутом
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+    if (e.target.value) {
+      // если инпут не пустой убрать сообщение об ошибке и разрежить добавлять новый инпут
+      setProhibitAdd(false)
+      setSendErr(false)
+    } else setProhibitAdd(true);
+    addNewWord(index, e.target.value);
+  }
   //добавить слово
   const addNewWord = (index: number, value: string) => {
     const newWords = [...words];
@@ -42,11 +68,15 @@ const CreateCollectionForm = ({
   const removeWord = (index: number) => {
     const newWord = [...words];
     newWord.splice(index, 1);
+
     setWords(newWord);
   };
   // сохранить коллекцию
   const saveCollections = () => {
-    console.log(words);
+    if (words.includes('')) {
+      setSendErr(true)
+      return
+    }
     if (changingCollection) {
       const index = collections.findIndex(
         (arr) => JSON.stringify(arr) === JSON.stringify(changingCollection)
@@ -60,6 +90,10 @@ const CreateCollectionForm = ({
       setIsModal(false);
     }
   };
+
+  useEffect(() => {
+    console.log(errWord)
+  }, [errWord])
 
   return (
     <div
@@ -86,9 +120,11 @@ const CreateCollectionForm = ({
               sx={{ mt: 1 }}
               value={word}
               autoFocus={true}
-              onChange={(e) => {
-                addNewWord(index, e.target.value);
-              }}
+              style={sendErr && word === '' ? { outline: '1px solid red' } : { outline: '' }}
+              onChange={(e) => handleChange(e, index)}
+              onBlur={() => { checkWord(word) }}
+              error={errWord.includes(word)}
+              helperText={errWord.includes(word) ? 'incorrect word' : ''}
               InputProps={{
                 // кнопка удаления
                 endAdornment: (
@@ -124,7 +160,8 @@ const CreateCollectionForm = ({
             variant="contained"
             sx={{ width: "45%" }}
             color="secondary"
-            onClick={addInput}
+            onClick={() => addInput()}
+            disabled={prohibitAdd}
           >
             Add
           </Button>
