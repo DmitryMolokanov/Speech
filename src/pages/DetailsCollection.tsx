@@ -19,7 +19,7 @@ interface DetailsCollectionProps {
 
 const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
   const [info, setInfo] = useState<IWord[]>();
-  const [curWord, setCurWord] = useState<string>("");
+  const [curWord, setCurWord] = useState<string>(detailsCollection[0] || "");
   const navigate = useNavigate();
 
   const handlMenuOpen = useCallback(async () => {
@@ -47,7 +47,7 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
       <Grid container gap={1} sx={{ p: 1 }}>
         <Grid container flexDirection={"column"}>
           <Select
-            sx={{ textAlign: "center", fontWeight: 700, fontSize: "20px" }}
+            sx={{ textAlign: "center", fontWeight: 700, fontSize: "20px", }}
             value={curWord}
             onChange={(e: SelectChangeEvent) => {
               return setCurWord(e.target.value);

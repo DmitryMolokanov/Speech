@@ -45,7 +45,7 @@ const Details = ({ info }: DetailsProps) => {
           border={"1px solid"}
           borderRadius={5}
           borderColor={"lightGray"}
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, backgroundColor: 'white' }}
         >
           {info.map((item: IWord) => {
             return (

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Grid, IconButton, Modal } from "@mui/material";
 import { Edit, Delete, List } from "@mui/icons-material";
 import CreateCollectionForm from "./CreateCollectionForm";
+import CollectionBtnGroup from "./CollectionBtnGroup";
 
 interface CollectionsContainerProps {
   collections: string[][];
@@ -70,33 +71,15 @@ const CollectionsContainer = ({
               style={{ display: "flex", alignItems: "center" }}
               onClick={() => selectCollection(item)}
             >
-              {item.map((word) => {
+              {item.slice(0, 3).map((word) => {
                 return <div>{word}</div>;
               })}
-              <Grid sx={{ mt: 'auto' }}>
-                <IconButton
-                  color="primary"
-                  sx={{ m: 1 }}
-                  onClick={(e) => { showDetailsCollection(e, item) }}
-                >
-                  <List />
-                </IconButton>
-                <IconButton
-                  color="primary"
-                  onClick={(e) => changeCollection(e, item)}
-                >
-                  <Edit />
-                </IconButton>
-                <IconButton
-                  color="error"
-                  sx={{ m: 1 }}
-                  onClick={(e) => {
-                    deleteCollection(e, item);
-                  }}
-                >
-                  <Delete />
-                </IconButton>
-              </Grid>
+              {item.length > 3 ? <span>...</span> : null}
+              <CollectionBtnGroup
+                item={item}
+                showDetailsCollection={showDetailsCollection}
+                changeCollection={changeCollection}
+                deleteCollection={deleteCollection} />
             </Box>
           );
         })}
