@@ -66,14 +66,14 @@ const CollectionsContainer = ({
               width={160}
               display={"flex"}
               flexDirection={"column"}
-              sx={{ border: "2px solid #4169e1 ", borderRadius: "7px", m: 1 }}
+              sx={{ borderRadius: "7px", m: 1, pt: 1, backgroundColor: 'white', boxShadow: '1px 1px 2px 2px lightgray' }}
               style={{ display: "flex", alignItems: "center" }}
               onClick={() => selectCollection(item)}
             >
               {item.map((word) => {
                 return <div>{word}</div>;
               })}
-              <Grid sx={{ mt: 1 }}>
+              <Grid sx={{ mt: 'auto' }}>
                 <IconButton
                   color="primary"
                   sx={{ m: 1 }}

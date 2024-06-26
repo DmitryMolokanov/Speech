@@ -30,7 +30,6 @@ const CreateCollectionForm = ({
   const [prohibitAdd, setProhibitAdd] = useState<boolean>(
     changingCollection ? false : true
   );
-  const [sendErr, setSendErr] = useState(false);
   const [errWord, setErrWord] = useState<string[]>([]);
 
   // добавить инпут
@@ -48,16 +47,20 @@ const CreateCollectionForm = ({
     if (result.title === "No Definitions Found") setErrWord([...errWord, word]);
   };
 
+  // снять выделение некорректного слова
+  const focusOnIncorrect = (word: string) => {
+    const newErrArr = errWord.filter((item) => item !== word);
+    setErrWord(newErrArr)
+  }
+
   // управление инпутом
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index: number,
-    word: string
   ) => {
     if (e.target.value) {
-      // если инпут не пустой убрать сообщение об ошибке и разрежить добавлять новый инпут
+      // если инпут не пустой убрать сообщение об ошибке и разрешить добавлять новый инпут
       setProhibitAdd(false);
-      setSendErr(false);
     } else setProhibitAdd(true);
     addNewWord(index, e.target.value);
   };
@@ -79,9 +82,15 @@ const CreateCollectionForm = ({
 
   // сохранить коллекцию
   const saveCollections = () => {
+    let cleanWords
     if (words.includes("")) {
-      setSendErr(true);
-      return;
+      cleanWords = words.filter((word) => word !== '')
+      setProhibitAdd(false)
+      setWords(cleanWords)
+    }
+    if (errWord.length > 0) {
+      console.log('err')
+      return
     }
     if (changingCollection) {
       const index = collections.findIndex(
@@ -92,6 +101,7 @@ const CreateCollectionForm = ({
       setCollections(newArr);
       setIsModal(false);
     } else {
+      cleanWords = words.filter((word) => word !== '')
       setCollections([...collections, words]);
       setIsModal(false);
     }
@@ -115,6 +125,7 @@ const CreateCollectionForm = ({
           backgroundColor: "white",
           padding: "20px 50px",
           width: "80vw",
+          borderRadius: '10px'
         }}
       >
         {words.map((word, index) => {
@@ -126,15 +137,11 @@ const CreateCollectionForm = ({
               sx={{ mt: 1 }}
               value={word}
               autoFocus={true}
-              style={
-                sendErr && word === ""
-                  ? { outline: "1px solid red" }
-                  : { outline: "" }
-              }
-              onChange={(e) => handleChange(e, index, word)}
+              onChange={(e) => handleChange(e, index)}
               onBlur={() => {
                 checkWord(word);
               }}
+              onFocus={() => { focusOnIncorrect(word) }}
               error={errWord.includes(word)}
               helperText={errWord.includes(word) ? "incorrect word" : ""}
               InputProps={{
