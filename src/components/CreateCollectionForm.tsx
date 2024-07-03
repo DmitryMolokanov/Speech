@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import "../pages/styles/collectionPage.css";
 
 interface CreateCollectionFormProps {
   collections: string[][];
@@ -33,7 +34,8 @@ const CreateCollectionForm = ({
   const [errWord, setErrWord] = useState<string[]>([]);
   const [touchWord, setTouchWord] = useState<string>();
   const [allElPosition, setAllElPosition] = useState<number[]>([]);
-  const [finalElPosition, setFinalElPosition] = useState<number>(0);
+  const [finalElPosition, setFinalElPosition] = useState<number | null>(null);
+  const [indexGap, setIndexGap] = useState<number | null>(null);
 
   // добавить инпут
   const addInput = () => {
@@ -111,18 +113,33 @@ const CreateCollectionForm = ({
   };
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     const position = e.touches[0].clientY;
+    if (position) {
+      const result = allElPosition.reduce(function (a, c) {
+        return Math.abs(a - position) < Math.abs(c - position) ? a : c;
+      });
+
+      const indexInsert = allElPosition.findIndex((item) => item === result);
+      if (indexInsert !== indexGap) setIndexGap(indexInsert);
+    }
     setFinalElPosition(position);
   };
+  useEffect(() => console.log(indexGap), [indexGap]);
+
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     const position = finalElPosition;
-    const result = allElPosition.reduce(function (a, c) {
-      return Math.abs(a - position) < Math.abs(c - position) ? a : c;
-    });
+    if (position) {
+      const result = allElPosition.reduce(function (a, c) {
+        return Math.abs(a - position) < Math.abs(c - position) ? a : c;
+      });
 
-    const indexInsert = allElPosition.findIndex((item) => item === result);
-    const newWords = [...words];
-    newWords.splice(indexInsert, 0, touchWord!);
-    setWords(newWords);
+      const indexInsert = allElPosition.findIndex((item) => item === result);
+      let newWords = [...words];
+      newWords = newWords.filter((item) => item !== touchWord);
+      newWords.splice(indexInsert, 0, touchWord!);
+      setWords(newWords);
+      setFinalElPosition(null);
+      setIndexGap(null);
+    } else return;
   };
 
   useEffect(() => {
@@ -140,15 +157,7 @@ const CreateCollectionForm = ({
         transform: "translateX(-50%)",
       }}
     >
-      <FormControl
-        className="form-collection"
-        style={{
-          backgroundColor: "white",
-          padding: "20px 50px",
-          width: "80vw",
-          borderRadius: "10px",
-        }}
-      >
+      <FormControl className="form-collection">
         {words.map((word, index) => {
           return (
             // инпут
@@ -173,6 +182,9 @@ const CreateCollectionForm = ({
               onTouchEnd={(e) => {
                 handleTouchEnd(e);
               }}
+              style={
+                index === indexGap ? { marginTop: "20px" } : { marginTop: "" }
+              }
               error={errWord.includes(word)}
               helperText={errWord.includes(word) ? "incorrect word" : ""}
               InputProps={{
