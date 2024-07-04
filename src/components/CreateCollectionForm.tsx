@@ -113,6 +113,7 @@ const CreateCollectionForm = ({
   };
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     const position = e.touches[0].clientY;
+
     if (position) {
       const result = allElPosition.reduce(function (a, c) {
         return Math.abs(a - position) < Math.abs(c - position) ? a : c;
@@ -123,7 +124,6 @@ const CreateCollectionForm = ({
     }
     setFinalElPosition(position);
   };
-  useEffect(() => console.log(indexGap), [indexGap]);
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     const position = finalElPosition;
@@ -146,6 +146,18 @@ const CreateCollectionForm = ({
     const allInputs = document.body.querySelectorAll(".form-input");
     const allOffsets = Array.from(allInputs).map((el: any) => el.offsetTop);
     setAllElPosition(allOffsets);
+    Array.from(allInputs).forEach((el) => {
+      el.addEventListener(
+        "touchstart",
+        (e: any) => {
+          setTimeout(() => {
+            e.preventDefault();
+            setTouchWord(e.target.value);
+          }, 1000);
+        },
+        { passive: false }
+      );
+    });
   }, [words]);
 
   return (
@@ -175,15 +187,12 @@ const CreateCollectionForm = ({
               onFocus={() => {
                 focusOnIncorrect(word);
               }}
-              onTouchStart={(e: any) => {
-                setTouchWord(e.target.value);
-              }}
               onTouchMove={(e) => handleTouchMove(e)}
               onTouchEnd={(e) => {
                 handleTouchEnd(e);
               }}
               style={
-                index === indexGap ? { marginTop: "20px" } : { marginTop: "" }
+                index === indexGap ? { marginTop: "30px" } : { marginTop: "" }
               }
               error={errWord.includes(word)}
               helperText={errWord.includes(word) ? "incorrect word" : ""}

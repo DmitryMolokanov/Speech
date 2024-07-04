@@ -1,6 +1,14 @@
 .form-collection {
+  position: relative;
   background-color: white;
   padding: 20px 50px !important;
   width: 80vw;
   border-radius: 10px;
+}
+.flashEl {
+  position: absolute;
+  width: 100%;
+  height: 30px;
+  background-color: red;
+  z-index: 20;
 }
