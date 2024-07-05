@@ -33,6 +33,7 @@ const CreateCollectionForm = ({
   );
   const [errWord, setErrWord] = useState<string[]>([]);
   const [touchWord, setTouchWord] = useState<string>();
+  const [startTouchPosition, setStartTouchPosition] = useState<number | null>(null)
   const [allElPosition, setAllElPosition] = useState<number[]>([]);
   const [finalElPosition, setFinalElPosition] = useState<number | null>(null);
   const [indexGap, setIndexGap] = useState<number | null>(null);
@@ -112,13 +113,15 @@ const CreateCollectionForm = ({
     }
   };
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const position = e.touches[0].clientY;
-
+    const position = e.touches[0].clientY
+    const temporaryEl = document.body.querySelector('.temporaryEl') as HTMLElement
+    temporaryEl.style.display = 'block'
+    temporaryEl.style.top = position - 40 + 'px'
+    // добавляет отступ при приближении указателя
     if (position) {
       const result = allElPosition.reduce(function (a, c) {
         return Math.abs(a - position) < Math.abs(c - position) ? a : c;
       });
-
       const indexInsert = allElPosition.findIndex((item) => item === result);
       if (indexInsert !== indexGap) setIndexGap(indexInsert);
     }
@@ -127,33 +130,46 @@ const CreateCollectionForm = ({
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     const position = finalElPosition;
+    // высчитать ближайший элемент над которым произошло touchend, то есть место, куда будет вставка
     if (position) {
       const result = allElPosition.reduce(function (a, c) {
         return Math.abs(a - position) < Math.abs(c - position) ? a : c;
       });
-
+      document.body.querySelector('.temporaryEl')?.remove()
       const indexInsert = allElPosition.findIndex((item) => item === result);
+      // вставить элемент
       let newWords = [...words];
       newWords = newWords.filter((item) => item !== touchWord);
-      newWords.splice(indexInsert, 0, touchWord!);
+      // если перетаскиваем сверху index-1 
+      startTouchPosition && startTouchPosition > finalElPosition ? newWords.splice(indexInsert, 0, touchWord!) : newWords.splice(indexInsert - 1, 0, touchWord!)
       setWords(newWords);
       setFinalElPosition(null);
+      setStartTouchPosition(null)
       setIndexGap(null);
     } else return;
   };
 
   useEffect(() => {
+    // получить все элементы до touchStart чтобы пожно было к ним обращаться во время остольных touch событий
     const allInputs = document.body.querySelectorAll(".form-input");
+    const form = document.body.querySelector('.form-collection')
+    const temporaryEl = document.createElement('div')
+    temporaryEl.className = 'temporaryEl'
+    temporaryEl.style.display = 'none'
+    form?.append(temporaryEl)
     const allOffsets = Array.from(allInputs).map((el: any) => el.offsetTop);
     setAllElPosition(allOffsets);
+    // touchstart устанавливается через addEventListener для добавления { passive: false }. Без него нельязя добавить preventDefault()
     Array.from(allInputs).forEach((el) => {
       el.addEventListener(
         "touchstart",
         (e: any) => {
           setTimeout(() => {
             e.preventDefault();
+            setStartTouchPosition(e.touches[0].clientY)
+            temporaryEl.innerHTML = e.target.value
             setTouchWord(e.target.value);
-          }, 1000);
+          }, 0);
         },
         { passive: false }
       );
@@ -192,7 +208,7 @@ const CreateCollectionForm = ({
                 handleTouchEnd(e);
               }}
               style={
-                index === indexGap ? { marginTop: "30px" } : { marginTop: "" }
+                index === indexGap ? { marginTop: "40px" } : { marginTop: "" }
               }
               error={errWord.includes(word)}
               helperText={errWord.includes(word) ? "incorrect word" : ""}
