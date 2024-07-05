@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import "../pages/styles/collectionPage.css";
 
 interface CreateCollectionFormProps {
   collections: string[][];
@@ -31,6 +32,10 @@ const CreateCollectionForm = ({
     changingCollection ? false : true
   );
   const [errWord, setErrWord] = useState<string[]>([]);
+  const [touchWord, setTouchWord] = useState<string>();
+  const [allElPosition, setAllElPosition] = useState<number[]>([]);
+  const [finalElPosition, setFinalElPosition] = useState<number | null>(null);
+  const [indexGap, setIndexGap] = useState<number | null>(null);
 
   // добавить инпут
   const addInput = () => {
@@ -50,13 +55,13 @@ const CreateCollectionForm = ({
   // снять выделение некорректного слова
   const focusOnIncorrect = (word: string) => {
     const newErrArr = errWord.filter((item) => item !== word);
-    setErrWord(newErrArr)
-  }
+    setErrWord(newErrArr);
+  };
 
   // управление инпутом
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index: number,
+    index: number
   ) => {
     if (e.target.value) {
       // если инпут не пустой убрать сообщение об ошибке и разрешить добавлять новый инпут
@@ -82,15 +87,15 @@ const CreateCollectionForm = ({
 
   // сохранить коллекцию
   const saveCollections = () => {
-    let cleanWords
+    let cleanWords;
     if (words.includes("")) {
-      cleanWords = words.filter((word) => word !== '')
-      setProhibitAdd(false)
-      setWords(cleanWords)
+      cleanWords = words.filter((word) => word !== "");
+      setProhibitAdd(false);
+      setWords(cleanWords);
     }
     if (errWord.length > 0) {
-      console.log('err')
-      return
+      console.log("err");
+      return;
     }
     if (changingCollection) {
       const index = collections.findIndex(
@@ -101,15 +106,59 @@ const CreateCollectionForm = ({
       setCollections(newArr);
       setIsModal(false);
     } else {
-      cleanWords = words.filter((word) => word !== '')
+      cleanWords = words.filter((word) => word !== "");
       setCollections([...collections, words]);
       setIsModal(false);
     }
   };
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const position = e.touches[0].clientY;
+
+    if (position) {
+      const result = allElPosition.reduce(function (a, c) {
+        return Math.abs(a - position) < Math.abs(c - position) ? a : c;
+      });
+
+      const indexInsert = allElPosition.findIndex((item) => item === result);
+      if (indexInsert !== indexGap) setIndexGap(indexInsert);
+    }
+    setFinalElPosition(position);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const position = finalElPosition;
+    if (position) {
+      const result = allElPosition.reduce(function (a, c) {
+        return Math.abs(a - position) < Math.abs(c - position) ? a : c;
+      });
+
+      const indexInsert = allElPosition.findIndex((item) => item === result);
+      let newWords = [...words];
+      newWords = newWords.filter((item) => item !== touchWord);
+      newWords.splice(indexInsert, 0, touchWord!);
+      setWords(newWords);
+      setFinalElPosition(null);
+      setIndexGap(null);
+    } else return;
+  };
 
   useEffect(() => {
-    console.log(errWord);
-  }, [errWord]);
+    const allInputs = document.body.querySelectorAll(".form-input");
+    const allOffsets = Array.from(allInputs).map((el: any) => el.offsetTop);
+    setAllElPosition(allOffsets);
+    Array.from(allInputs).forEach((el) => {
+      el.addEventListener(
+        "touchstart",
+        (e: any) => {
+          setTimeout(() => {
+            e.preventDefault();
+            setTouchWord(e.target.value);
+          }, 1000);
+        },
+        { passive: false }
+      );
+    });
+  }, [words]);
 
   return (
     <div
@@ -120,18 +169,12 @@ const CreateCollectionForm = ({
         transform: "translateX(-50%)",
       }}
     >
-      <FormControl
-        style={{
-          backgroundColor: "white",
-          padding: "20px 50px",
-          width: "80vw",
-          borderRadius: '10px'
-        }}
-      >
+      <FormControl className="form-collection">
         {words.map((word, index) => {
           return (
             // инпут
             <TextField
+              className="form-input"
               label={"word"}
               size="small"
               sx={{ mt: 1 }}
@@ -141,7 +184,16 @@ const CreateCollectionForm = ({
               onBlur={() => {
                 checkWord(word);
               }}
-              onFocus={() => { focusOnIncorrect(word) }}
+              onFocus={() => {
+                focusOnIncorrect(word);
+              }}
+              onTouchMove={(e) => handleTouchMove(e)}
+              onTouchEnd={(e) => {
+                handleTouchEnd(e);
+              }}
+              style={
+                index === indexGap ? { marginTop: "30px" } : { marginTop: "" }
+              }
               error={errWord.includes(word)}
               helperText={errWord.includes(word) ? "incorrect word" : ""}
               InputProps={{
