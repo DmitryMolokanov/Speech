@@ -47,7 +47,7 @@ const DetailsCollection = ({ detailsCollection }: DetailsCollectionProps) => {
       <Grid container gap={1} sx={{ p: 1 }}>
         <Grid container flexDirection={"column"}>
           <Select
-            sx={{ textAlign: "center", fontWeight: 700, fontSize: "20px", }}
+            sx={{ textAlign: "center", fontWeight: 700, fontSize: "20px", backgroundColor: 'white' }}
             value={curWord}
             onChange={(e: SelectChangeEvent) => {
               return setCurWord(e.target.value);

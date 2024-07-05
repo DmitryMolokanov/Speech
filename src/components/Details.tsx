@@ -21,7 +21,7 @@ const Details = ({ info }: DetailsProps) => {
   return (
     <div>
       {info ? (
-        <Grid container display={"flex"} justifyContent={"center"}>
+        <Grid container display={"flex"} justifyContent={"center"} >
           {info[0].phonetics.map((item) =>
             item.audio ? (
               <Button
