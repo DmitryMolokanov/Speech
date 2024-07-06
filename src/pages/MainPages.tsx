@@ -43,9 +43,17 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         // установить слово, которое будет отображено
         setWord(result[0].word);
         // проверить и установить озвучку слова
-        result[0].phonetics.some((el) => {
-          if (el.audio) return setWordAudio(el.audio);
-        });
+        if (result[0].phonetics.length > 0) {
+          result[0].phonetics.some((el) => {
+            if (el.audio) return setWordAudio(el.audio);
+          });
+        } else {
+          const speackDefinition = new SpeechSynthesisUtterance(arrWord[index]);
+          speackDefinition.lang = "en-US";
+          speackDefinition.rate = 0.8;
+          speechSynthesis.speak(speackDefinition);
+        }
+
         // следующая итерация
         const definition = result[0].meanings[0].definitions[0].definition;
         setDefinitions(definition);
@@ -69,14 +77,22 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
     );
     const result: IWord[] = await response.json();
     setWord(result[0].word);
-    if (result[0].phonetics[2]) {
-      setWordAudio(result[0].phonetics[2].audio);
-    } else setWordAudio(result[0].phonetics[1].audio);
+    if (result[0].phonetics.length > 0) {
+      result[0].phonetics.some((el) => {
+        if (el.audio) return setWordAudio(el.audio);
+      });
+    } else {
+      const speackDefinition = new SpeechSynthesisUtterance(arrWord[0]);
+      speackDefinition.lang = "en-US";
+      speackDefinition.rate = 0.8;
+      speechSynthesis.speak(speackDefinition);
+    }
     const definition = result[0].meanings[0].definitions[0].definition;
     setDefinitions(definition);
     setTimeout(() => {
       const speackDefinition = new SpeechSynthesisUtterance(definition);
       speackDefinition.lang = "en-US";
+      speackDefinition.rate = 0.8;
       speechSynthesis.speak(speackDefinition);
     }, 500);
     getWord();
