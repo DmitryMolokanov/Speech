@@ -6,6 +6,7 @@ import Definitions from "../components/Definitions";
 import Buttons from "../components/Buttons";
 import Ticker from "../components/Ticker";
 import "./styles/mainPage.css";
+import nosleep from "nosleep.js";
 
 interface MainPagesProps {
   arrWord: string[];
@@ -22,7 +23,11 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   // отслеживает зацикленность
   const [isLoop, setIsLoop] = useState<boolean>(false);
 
+  const noSleep = new nosleep();
+
   const getWord = () => {
+    noSleep.enable();
+
     let index = 1;
     const interval = setInterval(async () => {
       // установка значения для очистка интервала
@@ -56,6 +61,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   };
 
   const start = async () => {
+    noSleep.enable();
     setInProgress(true);
     // тоже самое что getWord, только для установления дефолтного значения, чтобы не ждать первой итерации интервала.
     const response = await fetch(
@@ -77,6 +83,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   };
 
   const stop = () => {
+    noSleep.disable();
     clearInterval(mainInterval);
     speechSynthesis.cancel();
     setInProgress(false);
