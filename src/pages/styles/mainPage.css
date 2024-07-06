@@ -10,7 +10,8 @@
 .ticker-title {
   position: relative;
   font-weight: 600;
-  background-color: whitesmoke;
+  white-space: nowrap;
+  background-color: red;
   z-index: 1;
 }
 .ticker-word-container {
