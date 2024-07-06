@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FormControl,
   TextField,
@@ -6,9 +6,13 @@ import {
   Box,
   InputAdornment,
   IconButton,
+  Grid,
+  Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import "../pages/styles/collectionPage.css";
+import CollectionFormTitle from "./CollectionFormTitle";
 
 interface CreateCollectionFormProps {
   collections: string[][];
@@ -33,10 +37,13 @@ const CreateCollectionForm = ({
   );
   const [errWord, setErrWord] = useState<string[]>([]);
   const [touchWord, setTouchWord] = useState<string>();
-  const [startTouchPosition, setStartTouchPosition] = useState<number | null>(null)
+  const [startTouchPosition, setStartTouchPosition] = useState<number | null>(
+    null
+  );
   const [allElPosition, setAllElPosition] = useState<number[]>([]);
   const [finalElPosition, setFinalElPosition] = useState<number | null>(null);
   const [indexGap, setIndexGap] = useState<number | null>(null);
+  const [title, setTitle] = useState<string | undefined>(undefined);
 
   // добавить инпут
   const addInput = () => {
@@ -70,6 +77,7 @@ const CreateCollectionForm = ({
     } else setProhibitAdd(true);
     addNewWord(index, e.target.value);
   };
+
   //добавить слово
   const addNewWord = (index: number, value: string) => {
     const newWords = [...words];
@@ -113,10 +121,12 @@ const CreateCollectionForm = ({
     }
   };
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const position = e.touches[0].clientY
-    const temporaryEl = document.body.querySelector('.temporaryEl') as HTMLElement
-    temporaryEl.style.display = 'block'
-    temporaryEl.style.top = position - 40 + 'px'
+    const position = e.touches[0].clientY;
+    const temporaryEl = document.body.querySelector(
+      ".temporaryEl"
+    ) as HTMLElement;
+    temporaryEl.style.display = "block";
+    temporaryEl.style.top = position - 40 + "px";
     // добавляет отступ при приближении указателя
     if (position) {
       const result = allElPosition.reduce(function (a, c) {
@@ -135,16 +145,18 @@ const CreateCollectionForm = ({
       const result = allElPosition.reduce(function (a, c) {
         return Math.abs(a - position) < Math.abs(c - position) ? a : c;
       });
-      document.body.querySelector('.temporaryEl')?.remove()
+      document.body.querySelector(".temporaryEl")?.remove();
       const indexInsert = allElPosition.findIndex((item) => item === result);
       // вставить элемент
       let newWords = [...words];
       newWords = newWords.filter((item) => item !== touchWord);
-      // если перетаскиваем сверху index-1 
-      startTouchPosition && startTouchPosition > finalElPosition ? newWords.splice(indexInsert, 0, touchWord!) : newWords.splice(indexInsert - 1, 0, touchWord!)
+      // если перетаскиваем сверху index-1
+      startTouchPosition && startTouchPosition > finalElPosition
+        ? newWords.splice(indexInsert, 0, touchWord!)
+        : newWords.splice(indexInsert - 1, 0, touchWord!);
       setWords(newWords);
       setFinalElPosition(null);
-      setStartTouchPosition(null)
+      setStartTouchPosition(null);
       setIndexGap(null);
     } else return;
   };
@@ -152,11 +164,11 @@ const CreateCollectionForm = ({
   useEffect(() => {
     // получить все элементы до touchStart чтобы пожно было к ним обращаться во время остольных touch событий
     const allInputs = document.body.querySelectorAll(".form-input");
-    const form = document.body.querySelector('.form-collection')
-    const temporaryEl = document.createElement('div')
-    temporaryEl.className = 'temporaryEl'
-    temporaryEl.style.display = 'none'
-    form?.append(temporaryEl)
+    const form = document.body.querySelector(".form-collection");
+    const temporaryEl = document.createElement("div");
+    temporaryEl.className = "temporaryEl";
+    temporaryEl.style.display = "none";
+    form?.append(temporaryEl);
     const allOffsets = Array.from(allInputs).map((el: any) => el.offsetTop);
     setAllElPosition(allOffsets);
     // touchstart устанавливается через addEventListener для добавления { passive: false }. Без него нельязя добавить preventDefault()
@@ -166,8 +178,8 @@ const CreateCollectionForm = ({
         (e: any) => {
           setTimeout(() => {
             e.preventDefault();
-            setStartTouchPosition(e.touches[0].clientY)
-            temporaryEl.innerHTML = e.target.value
+            setStartTouchPosition(e.touches[0].clientY);
+            temporaryEl.innerHTML = e.target.value;
             setTouchWord(e.target.value);
           }, 0);
         },
@@ -186,6 +198,11 @@ const CreateCollectionForm = ({
       }}
     >
       <FormControl className="form-collection">
+        {!title ? (
+          <CollectionFormTitle setTitle={setTitle} />
+        ) : (
+          <Typography>{title}</Typography>
+        )}
         {words.map((word, index) => {
           return (
             // инпут
@@ -219,6 +236,7 @@ const CreateCollectionForm = ({
                     {words.length > 1 ? (
                       <IconButton
                         size="small"
+                        color="error"
                         onClick={() => removeWord(word, index)}
                       >
                         <Delete />
