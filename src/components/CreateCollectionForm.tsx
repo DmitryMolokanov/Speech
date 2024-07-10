@@ -10,15 +10,15 @@ import {
   Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import "../pages/styles/collectionPage.css";
 import CollectionFormTitle from "./CollectionFormTitle";
+import { ICollection } from "../types";
 
 interface CreateCollectionFormProps {
-  collections: string[][];
-  setCollections: (arr: string[][]) => void;
+  collections: ICollection[];
+  setCollections: (arr: ICollection[]) => void;
   setIsModal: (el: boolean) => void;
-  changingCollection?: string[];
+  changingCollection?: ICollection | null;
 }
 
 const CreateCollectionForm = ({
@@ -28,8 +28,8 @@ const CreateCollectionForm = ({
   changingCollection,
 }: CreateCollectionFormProps) => {
   // при change устанавливать значение word из changingCollection, при создании - пустой массив
-  const [words, setWords] = useState<string[]>(
-    changingCollection ? changingCollection : [""]
+  const [curCollection, setCurCollection] = useState<ICollection | null>(
+    changingCollection ? changingCollection : { id: 0, title: '', words: [''] }
   );
   // отключить кнопку добавления при пустом инпуте при создании новой коллекции
   const [prohibitAdd, setProhibitAdd] = useState<boolean>(
@@ -43,12 +43,17 @@ const CreateCollectionForm = ({
   const [allElPosition, setAllElPosition] = useState<number[]>([]);
   const [finalElPosition, setFinalElPosition] = useState<number | null>(null);
   const [indexGap, setIndexGap] = useState<number | null>(null);
-  const [title, setTitle] = useState<string | undefined>(undefined);
+  const [title, setTitle] = useState<string>('');
+  const [titleErr, setTitleErr] = useState(false)
 
   // добавить инпут
   const addInput = () => {
     setProhibitAdd(true);
-    setWords([...words, ""]);
+    if (curCollection) {
+      const newInput = { ...curCollection, words: [...curCollection.words, ''] }
+      console.log(newInput)
+      setCurCollection(newInput);
+    }
   };
 
   // проверить слово в словаре
@@ -80,27 +85,31 @@ const CreateCollectionForm = ({
 
   //добавить слово
   const addNewWord = (index: number, value: string) => {
-    const newWords = [...words];
-    newWords[index] = value;
-    setWords(newWords);
+    const newWords = curCollection?.words;
+    if (newWords) newWords[index] = value;
+    if (newWords) setCurCollection({ ...curCollection, words: newWords });
   };
 
   // удалить инпут или слово
   const removeWord = (word: string, index: number) => {
     const newErrArr = errWord.filter((item) => item !== word);
     setErrWord(newErrArr);
-    const newWord = [...words];
-    newWord.splice(index, 1);
-    setWords(newWord);
+    const newWord = curCollection?.words;
+    if (newWord) newWord.splice(index, 1);
+    if (newWord) setCurCollection({ ...curCollection, words: newWord });
   };
 
   // сохранить коллекцию
   const saveCollections = () => {
+    if (!title) {
+      setTitleErr(true)
+      return
+    }
     let cleanWords;
-    if (words.includes("")) {
-      cleanWords = words.filter((word) => word !== "");
+    if (curCollection?.words.includes("")) {
+      cleanWords = curCollection.words.filter((word) => word !== "");
       setProhibitAdd(false);
-      setWords(cleanWords);
+      setCurCollection({ ...curCollection, words: cleanWords });
     }
     if (errWord.length > 0) {
       console.log("err");
@@ -111,15 +120,20 @@ const CreateCollectionForm = ({
         (arr) => JSON.stringify(arr) === JSON.stringify(changingCollection)
       );
       const newArr = [...collections];
-      newArr.splice(index, 1, words);
+      if (curCollection) newArr.splice(index, 1, curCollection);
       setCollections(newArr);
       setIsModal(false);
     } else {
-      cleanWords = words.filter((word) => word !== "");
-      setCollections([...collections, words]);
+      if (curCollection) {
+        cleanWords = curCollection?.words.filter((word) => word !== "");
+        curCollection.id = Date.now()
+        curCollection.title = title
+        if (collections) setCollections([...collections, curCollection])
+      }
       setIsModal(false);
     }
   };
+
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     const position = e.touches[0].clientY;
     const temporaryEl = document.body.querySelector(
@@ -148,13 +162,13 @@ const CreateCollectionForm = ({
       document.body.querySelector(".temporaryEl")?.remove();
       const indexInsert = allElPosition.findIndex((item) => item === result);
       // вставить элемент
-      let newWords = [...words];
+      let newWords = [...curCollection!.words];
       newWords = newWords.filter((item) => item !== touchWord);
       // если перетаскиваем сверху index-1
       startTouchPosition && startTouchPosition > finalElPosition
         ? newWords.splice(indexInsert, 0, touchWord!)
         : newWords.splice(indexInsert - 1, 0, touchWord!);
-      setWords(newWords);
+      if (curCollection) setCurCollection({ ...curCollection, words: newWords });
       setFinalElPosition(null);
       setStartTouchPosition(null);
       setIndexGap(null);
@@ -186,7 +200,13 @@ const CreateCollectionForm = ({
         { passive: false }
       );
     });
-  }, [words]);
+  }, [curCollection]);
+
+  useEffect(() => {
+    if (curCollection?.title) {
+      setTitle(curCollection.title)
+    }
+  }, [curCollection])
 
   return (
     <div
@@ -199,11 +219,11 @@ const CreateCollectionForm = ({
     >
       <FormControl className="form-collection">
         {!title ? (
-          <CollectionFormTitle setTitle={setTitle} />
+          <CollectionFormTitle setTitle={setTitle} titleErr={titleErr} setTitleErr={setTitleErr} />
         ) : (
-          <Typography>{title}</Typography>
+          <Typography className="form-collection-title">{title}</Typography>
         )}
-        {words.map((word, index) => {
+        {curCollection?.words.map((word, index) => {
           return (
             // инпут
             <TextField
@@ -233,7 +253,7 @@ const CreateCollectionForm = ({
                 // кнопка удаления
                 endAdornment: (
                   <InputAdornment position="end">
-                    {words.length > 1 ? (
+                    {curCollection.words.length > 1 ? (
                       <IconButton
                         size="small"
                         color="error"

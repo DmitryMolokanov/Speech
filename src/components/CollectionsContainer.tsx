@@ -4,11 +4,12 @@ import { Box, Grid, IconButton, Modal } from "@mui/material";
 import { Edit, Delete, List } from "@mui/icons-material";
 import CreateCollectionForm from "./CreateCollectionForm";
 import CollectionBtnGroup from "./CollectionBtnGroup";
+import { ICollection } from "../types";
 
 interface CollectionsContainerProps {
-  collections: string[][];
+  collections: ICollection[];
   setArrWord: (el: string[]) => void;
-  setCollections: (el: string[][]) => void;
+  setCollections: (el: ICollection[]) => void;
   setDetailsCollection: (el: string[]) => void
 }
 
@@ -18,26 +19,26 @@ const CollectionsContainer = ({
   setArrWord,
   setDetailsCollection
 }: CollectionsContainerProps) => {
-  const [changingCollection, setChangingCollection] = useState<string[]>([]);
+  const [changingCollection, setChangingCollection] = useState<ICollection | null>(null);
   const [isModal, setIsModal] = useState(false);
 
   const navigate = useNavigate();
 
-  const selectCollection = (item: string[]) => {
-    setArrWord(item);
+  const selectCollection = (item: ICollection) => {
+    setArrWord(item.words);
 
     navigate("/");
   };
 
-  const showDetailsCollection = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: string[]) => {
+  const showDetailsCollection = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: ICollection) => {
     e.stopPropagation();
     navigate('/details-collection')
-    setDetailsCollection(item)
+    setDetailsCollection(item.words)
   }
 
   const changeCollection = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    item: string[]
+    item: ICollection
   ) => {
     e.stopPropagation();
     setIsModal(true);
@@ -46,7 +47,7 @@ const CollectionsContainer = ({
 
   const deleteCollection = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    item: string[]
+    item: ICollection
   ) => {
     e.stopPropagation();
     const newCollections = collections.filter(
@@ -71,10 +72,10 @@ const CollectionsContainer = ({
               style={{ display: "flex", alignItems: "center" }}
               onClick={() => selectCollection(item)}
             >
-              {item.slice(0, 3).map((word) => {
+              {item.words.slice(0, 3).map((word) => {
                 return <div>{word}</div>;
               })}
-              {item.length > 3 ? <span>...</span> : null}
+              {item.words.length > 3 ? <span>...</span> : null}
               <CollectionBtnGroup
                 item={item}
                 showDetailsCollection={showDetailsCollection}

@@ -1,12 +1,13 @@
 import React from 'react'
 import { Grid, IconButton, } from '@mui/material';
 import { List, Edit, Delete } from '@mui/icons-material';
+import { ICollection } from '../types';
 
 interface CollectionBtnGroupProps {
-    item: string[]
-    showDetailsCollection: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: string[]) => void
-    changeCollection: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: string[]) => void
-    deleteCollection: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: string[]) => void
+    item: ICollection
+    showDetailsCollection: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: ICollection) => void
+    changeCollection: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: ICollection) => void
+    deleteCollection: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: ICollection) => void
 }
 
 const CollectionBtnGroup = ({ item, showDetailsCollection, changeCollection, deleteCollection }: CollectionBtnGroupProps) => {

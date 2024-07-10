@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import CreateCollectionBtn from "../components/CreateCollectionBtn";
 import { Typography } from "@mui/material";
 import CollectionsContainer from "../components/CollectionsContainer";
+import { ICollection } from "../types";
 
 interface CollectionsProps {
   setArrWord: (el: string[]) => void;
@@ -10,7 +11,7 @@ interface CollectionsProps {
 }
 
 const Collections = ({ setArrWord, setDetailsCollection }: CollectionsProps) => {
-  const [collections, setCollections] = useState<string[][]>([]);
+  const [collections, setCollections] = useState<ICollection[]>([]);
 
   useEffect(() => {
     localStorage.collections &&
@@ -18,8 +19,11 @@ const Collections = ({ setArrWord, setDetailsCollection }: CollectionsProps) => 
   }, []);
 
   useEffect(() => {
+    console.log(collections)
     if (collections.length > 0) {
+
       const jsonCollection = JSON.stringify(collections);
+      console.log(jsonCollection)
       localStorage.setItem("collections", jsonCollection);
     }
   }, [collections]);

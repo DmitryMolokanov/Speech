@@ -17,7 +17,6 @@ interface DetailsProps {
 }
 
 const Details = ({ info }: DetailsProps) => {
-  console.log(info);
   return (
     <div>
       {info ? (

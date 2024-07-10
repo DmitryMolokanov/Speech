@@ -3,15 +3,20 @@ import { TextField, InputAdornment, IconButton, Grid } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 interface CollectionFormTitleProps {
-  setTitle: (el: string | undefined) => void;
+  setTitle: (el: string) => void;
+  titleErr: boolean
+  setTitleErr: (el: boolean) => void
 }
 
-const CollectionFormTitle: FC<CollectionFormTitleProps> = ({ setTitle }) => {
+const CollectionFormTitle: FC<CollectionFormTitleProps> = ({ setTitle, titleErr, setTitleErr }) => {
   const titleRef = useRef<HTMLInputElement>(null);
 
   // добавить заголовок
   const handleAddTitle = () => {
-    if (titleRef) setTitle(titleRef.current?.value);
+    if (titleRef) {
+      setTitle(titleRef.current!.value)
+      setTitleErr(false)
+    };
   };
 
   return (
@@ -20,6 +25,8 @@ const CollectionFormTitle: FC<CollectionFormTitleProps> = ({ setTitle }) => {
       label={"Title"}
       placeholder="Add title"
       size="small"
+      error={titleErr}
+      helperText={titleErr ? 'necessary field' : ''}
       sx={{ mb: 2 }}
       InputProps={{
         endAdornment: (

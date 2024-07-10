@@ -10,11 +10,11 @@ function App() {
   const [detailsCollection, setDetailsCollection] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!arrWord.length) {
+    if (!arrWord) {
       const collection = localStorage.getItem("collections");
       if (collection) setArrWord(JSON.parse(collection)[0]);
-    }
-  }, [arrWord.length]);
+    } else return
+  }, [arrWord]);
 
   return (
     <div className="App">

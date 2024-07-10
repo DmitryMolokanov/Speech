@@ -29,3 +29,9 @@ export interface IDefinitions {
     }
   ];
 }
+
+export interface ICollection {
+  id: number
+  title: string
+  words: string[]
+}

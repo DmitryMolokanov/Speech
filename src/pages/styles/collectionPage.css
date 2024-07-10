@@ -19,3 +19,12 @@
   transform: translateX(-50%);
   z-index: 20;
 }
+.form-collection-title{
+  text-align: center;
+  font-weight: 700 !important;
+  padding: 10px 10px;
+  border: 1px  solid lightgray;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgb(204, 204, 204);
+  margin-bottom: 10px !important;
+}

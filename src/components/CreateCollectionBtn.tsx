@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Box, Typography, Button, Modal } from "@mui/material";
 import { AddCircle } from "@mui/icons-material";
 import CreateCollectionForm from "./CreateCollectionForm";
+import { ICollection } from "../types";
 
 interface CreateCollectionBtnProps {
-  collections: string[][];
-  setCollections: (arr: string[][]) => void;
+  collections: ICollection[];
+  setCollections: (arr: ICollection[]) => void;
 }
 
 const CreateCollectionBtn = ({
