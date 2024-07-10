@@ -34,7 +34,6 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
           `https://api.dictionaryapi.dev/api/v2/entries/en/${arrWord[index]}`
         );
         const result: IWord[] = await response.json();
-        console.log(result);
         // установить слово, которое будет отображено
         setWord(result[0].word);
         // проверить и установить озвучку слова

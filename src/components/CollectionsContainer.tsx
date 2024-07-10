@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Grid, IconButton, Modal } from "@mui/material";
+import { Box, Grid, IconButton, Modal, Typography } from "@mui/material";
 import { Edit, Delete, List } from "@mui/icons-material";
 import CreateCollectionForm from "./CreateCollectionForm";
 import CollectionBtnGroup from "./CollectionBtnGroup";
@@ -68,10 +68,11 @@ const CollectionsContainer = ({
               width={160}
               display={"flex"}
               flexDirection={"column"}
-              sx={{ borderRadius: "7px", m: 1, pt: 1, backgroundColor: 'white', boxShadow: '1px 1px 2px 2px lightgray' }}
+              sx={{ borderRadius: "7px", m: 1, backgroundColor: 'white', boxShadow: '1px 1px 2px 2px lightgray' }}
               style={{ display: "flex", alignItems: "center" }}
               onClick={() => selectCollection(item)}
             >
+              <Typography className="collection-container-title">{item.title}</Typography>
               {item.words.slice(0, 3).map((word) => {
                 return <div>{word}</div>;
               })}
@@ -92,7 +93,7 @@ const CollectionsContainer = ({
           changingCollection={changingCollection}
         />
       </Modal>
-    </Grid>
+    </Grid >
   );
 };
 

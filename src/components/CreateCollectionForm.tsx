@@ -193,8 +193,10 @@ const CreateCollectionForm = ({
           setTimeout(() => {
             e.preventDefault();
             setStartTouchPosition(e.touches[0].clientY);
-            temporaryEl.innerHTML = e.target.value;
-            setTouchWord(e.target.value);
+            if (e.target.value) {
+              temporaryEl.innerHTML = e.target.value;
+              setTouchWord(e.target.value);
+            } else return
           }, 0);
         },
         { passive: false }
