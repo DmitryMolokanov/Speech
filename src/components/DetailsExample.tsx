@@ -1,20 +1,22 @@
 import React from "react";
 import { Typography } from "@mui/material";
+
 interface DetailsExampleProps {
   definition: {
     example: string;
   };
 }
+
 const DetailsExample = ({ definition }: DetailsExampleProps) => {
   return (
     <div>
       {definition.example && (
         <div>
-          <Typography style={{ textDecoration: "underline" }}>
+          <Typography className="details-additionally-title">
             example:
           </Typography>
-          <Typography sx={{ bgcolor: "lightgray", pr: 1 }}>
-            {definition.example}
+          <Typography className="details-additionally">
+            <span>&#8220;{definition.example}&#8221;</span>
           </Typography>
         </div>
       )}

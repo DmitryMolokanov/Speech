@@ -11,13 +11,11 @@ interface DetailsSynonymseProps {
 const DetailsSynonyms = ({ definition }: DetailsSynonymseProps) => {
   return (
     <div>
-      <Typography style={{ textDecoration: "underline" }}>synonyms:</Typography>
-      <Grid container spacing={1} display={"flex"}>
+      <Typography className="details-additionally-title" sx={{ pt: 1 }}>synonyms:</Typography>
+      <Grid container spacing={1} display={"flex"} className="details-additionally-synonyms">
         {definition.synonyms.map((word: string) => {
           return (
-            <Grid item xs={3} sx={{ mt: 2, p: 1, bgcolor: "lightGrey" }}>
-              {word}
-            </Grid>
+            <span >{word}</span>
           );
         })}
       </Grid>

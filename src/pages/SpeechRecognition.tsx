@@ -21,8 +21,8 @@ const VoiceRecord = () => {
             <Header />
             <p>Microphone: {listening ? 'on' : 'off'}</p>
             <Box width={360} height={300} sx={{ border: '2px solid' }}>{transcript}</Box>
-            <Button onClick={() => SpeechRecognition.startListening()}>Start</Button>
-            <Button onClick={() => SpeechRecognition.stopListening()}>Stop</Button>
+            <Button onPointerDown={() => SpeechRecognition.startListening()}>Start</Button>
+            <Button onPointerDown={() => SpeechRecognition.stopListening()}>Stop</Button>
         </div>
     )
 };

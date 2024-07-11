@@ -7,3 +7,26 @@
     color: rgb(50, 196, 245);
   }
 }
+.details-additionally-title{
+  font-weight: 600 !important;
+  padding: 0px 0px 5px 10px;
+  color: rgb(70, 70, 70);
+}
+
+.details-additionally{
+  background-color: rgb(235, 235, 235);
+  border-radius: 3px;
+   span {
+    padding-left:5px;
+  }
+}
+
+.details-additionally-synonyms{
+   span {
+    background-color: rgb(235, 235, 235);
+    border-radius: 3px;
+    padding: 0px 5px;
+    margin-top: 7px;
+    margin-left: 10px;
+  }
+}
