@@ -51,7 +51,7 @@ const CollectionsContainer = ({
   ) => {
     e.stopPropagation();
     const newCollections = collections.filter(
-      (collection) => JSON.stringify(collection) !== JSON.stringify(item)
+      (collection) => collection.id !== item.id
     );
     setCollections(newCollections);
   };

@@ -196,7 +196,7 @@ const CreateCollectionForm = ({
             if (e.target.value) {
               temporaryEl.innerHTML = e.target.value;
               setTouchWord(e.target.value);
-            } else return
+            }
           }, 0);
         },
         { passive: false }
