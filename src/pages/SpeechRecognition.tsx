@@ -20,9 +20,9 @@ const VoiceRecord = () => {
         <div>
             <Header />
             <p>Microphone: {listening ? 'on' : 'off'}</p>
-            <Box>{transcript}</Box>
-            <Button onClick={() => SpeechRecognition.startListening}>Start</Button>
-            <Button onClick={() => SpeechRecognition.stopListening}>Stop</Button>
+            <Box width={360} height={300} sx={{ border: '2px solid' }}>{transcript}</Box>
+            <Button onClick={() => SpeechRecognition.startListening()}>Start</Button>
+            <Button onClick={() => SpeechRecognition.stopListening()}>Stop</Button>
         </div>
     )
 };
