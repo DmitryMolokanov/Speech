@@ -10,16 +10,17 @@ interface CollectionsContainerProps {
   collections: ICollection[];
   setArrWord: (el: string[]) => void;
   setCollections: (el: ICollection[]) => void;
-  setDetailsCollection: (el: string[]) => void
+  setDetailsCollection: (el: string[]) => void;
 }
 
 const CollectionsContainer = ({
   collections,
   setCollections,
   setArrWord,
-  setDetailsCollection
+  setDetailsCollection,
 }: CollectionsContainerProps) => {
-  const [changingCollection, setChangingCollection] = useState<ICollection | null>(null);
+  const [changingCollection, setChangingCollection] =
+    useState<ICollection | null>(null);
   const [isModal, setIsModal] = useState(false);
 
   const navigate = useNavigate();
@@ -30,11 +31,14 @@ const CollectionsContainer = ({
     navigate("/");
   };
 
-  const showDetailsCollection = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: ICollection) => {
+  const showDetailsCollection = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    item: ICollection
+  ) => {
     e.stopPropagation();
-    navigate('/details-collection')
-    setDetailsCollection(item.words)
-  }
+    navigate("/details-collection");
+    setDetailsCollection(item.words);
+  };
 
   const changeCollection = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -57,10 +61,7 @@ const CollectionsContainer = ({
   };
 
   return (
-    <Grid
-      container
-      style={{ display: "flex", justifyContent: "center" }}
-    >
+    <Grid container style={{ display: "flex", justifyContent: "center" }}>
       {collections.length > 0 &&
         collections.map((item) => {
           return (
@@ -68,11 +69,18 @@ const CollectionsContainer = ({
               width={160}
               display={"flex"}
               flexDirection={"column"}
-              sx={{ borderRadius: "7px", m: 1, backgroundColor: 'white', boxShadow: '1px 1px 2px 2px lightgray' }}
+              sx={{
+                borderRadius: "7px",
+                m: 1,
+                backgroundColor: "white",
+                boxShadow: "1px 1px 2px 2px lightgray",
+              }}
               style={{ display: "flex", alignItems: "center" }}
               onClick={() => selectCollection(item)}
             >
-              <Typography className="collection-container-title">{item.title}</Typography>
+              <Typography className="collection-container-title">
+                {item.title}
+              </Typography>
               {item.words.slice(0, 3).map((word) => {
                 return <div>{word}</div>;
               })}
@@ -81,7 +89,8 @@ const CollectionsContainer = ({
                 item={item}
                 showDetailsCollection={showDetailsCollection}
                 changeCollection={changeCollection}
-                deleteCollection={deleteCollection} />
+                deleteCollection={deleteCollection}
+              />
             </Box>
           );
         })}
@@ -93,7 +102,7 @@ const CollectionsContainer = ({
           changingCollection={changingCollection}
         />
       </Modal>
-    </Grid >
+    </Grid>
   );
 };
 

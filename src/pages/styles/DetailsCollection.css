@@ -1,0 +1,9 @@
+.details-accordeon {
+  padding-left: 40px !important;
+  .details-add-materials {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    color: rgb(50, 196, 245);
+  }
+}
