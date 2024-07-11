@@ -44,6 +44,15 @@ const Header = () => {
               Collection
             </Button>
           </ListItem>
+          <ListItem>
+            <Button
+              component={RouterLink}
+              to="/speech-recognition"
+              sx={{ fontWeight: 700 }}
+            >
+              Speech Recognition
+            </Button>
+          </ListItem>
         </List>
       </Drawer>
     </Box>
