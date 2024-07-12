@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPages from "./pages/MainPages";
 import Collections from "./pages/Collections";
 import DetailsCollection from "./pages/DetailsCollection";
-import VoiceRecord from "./pages/SpeechRecognition";
+import VoiceRecord from "./pages/VoiceRecord";
 
 function App() {
   const [arrWord, setArrWord] = useState<string[]>([]);
