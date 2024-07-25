@@ -30,8 +30,6 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
     let definitionLength = 0;
     let intervalTime = 7000;
     const intervalFunction = async () => {
-      // установка значения для очистка интервала
-      setMainInterval(interval);
       // проверка, что индекс не больше массива
       if (index < arrWord.length) {
         // получение данных по API
@@ -67,14 +65,15 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         index++;
 
         // динамическое изменение интервала
-        console.log(Math.ceil(definitionLength / 17 + 1));
         intervalTime = Math.ceil(definitionLength / 17 + 2) * 1000;
-        clearInterval(interval);
         interval = setInterval(intervalFunction, intervalTime);
-      } else setInProgress(false);
+        clearInterval(interval);
+      } else { setInProgress(false); }
     };
 
     let interval = setInterval(intervalFunction, intervalTime);
+    // установка значения для очистка интервала
+    setMainInterval(interval);
   };
 
   const start = async () => {

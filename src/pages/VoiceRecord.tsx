@@ -24,9 +24,7 @@ const VoiceRecord = () => {
             <Box width={360} height={300} sx={{ border: '2px solid' }}>{transcript}</Box>
             <Button onPointerDown={() => SpeechRecognition.startListening({ continuous: true, language: 'en-US' })}>Start</Button>
             <Button onPointerDown={() => SpeechRecognition.stopListening()}>Stop</Button>
-
-            <textarea spellCheck lang='en' value={value}></textarea>
-        </div>
+            <textarea spellCheck lang='en' value={value}></textarea>        </div>
     )
 };
 

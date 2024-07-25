@@ -9,7 +9,6 @@ import {
   Toolbar,
   List,
   Button,
-  ListItemText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -18,7 +17,7 @@ const Header = () => {
   return (
     <Box sx={{ flexGrow: 1, position: "relative", zIndex: 2 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'end', }}>
           <IconButton
             color="inherit"
             size="large"
@@ -28,7 +27,8 @@ const Header = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer open={isMenu} onClose={() => setIsMenu(false)}>
+
+      <Drawer open={isMenu} onClose={() => setIsMenu(false)} anchor={"right"}>
         <List>
           <ListItem>
             <Button component={RouterLink} to="/" sx={{ fontWeight: 700 }}>
