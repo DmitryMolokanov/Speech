@@ -6,6 +6,7 @@ import Definitions from "../components/Definitions";
 import Buttons from "../components/Buttons";
 import Ticker from "../components/Ticker";
 import "./styles/mainPage.css";
+import nosleep from "nosleep.js";
 
 interface MainPagesProps {
   arrWord: string[];
@@ -15,6 +16,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   const [word, setWord] = useState("");
   const [wordAudio, setWordAudio] = useState("");
   const [definitions, setDefinitions] = useState("");
+  const noSleep = new nosleep();
 
   const [mainInterval, setMainInterval] = useState<any>();
   // отслеживает начало и окончание воспроизведения
@@ -23,8 +25,11 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   const [isLoop, setIsLoop] = useState<boolean>(false);
 
   const getWord = () => {
+    noSleep.enable();
     let index = 1;
-    const interval = setInterval(async () => {
+    let definitionLength = 0;
+    let intervalTime = 7000;
+    const intervalFunction = async () => {
       // установка значения для очистка интервала
       setMainInterval(interval);
       // проверка, что индекс не больше массива
@@ -50,6 +55,8 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
 
         // следующая итерация
         const definition = result[0].meanings[0].definitions[0].definition;
+        definitionLength = definition.length;
+
         setDefinitions(definition);
         setTimeout(() => {
           const speackDefinition = new SpeechSynthesisUtterance(definition);
@@ -58,8 +65,16 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
           speechSynthesis.speak(speackDefinition);
         }, 1000);
         index++;
+
+        // динамическое изменение интервала
+        console.log(Math.ceil(definitionLength / 17 + 1));
+        intervalTime = Math.ceil(definitionLength / 17 + 2) * 1000;
+        clearInterval(interval);
+        interval = setInterval(intervalFunction, intervalTime);
       } else setInProgress(false);
-    }, 7000);
+    };
+
+    let interval = setInterval(intervalFunction, intervalTime);
   };
 
   const start = async () => {
@@ -92,6 +107,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   };
 
   const stop = () => {
+    noSleep.disable();
     clearInterval(mainInterval);
     speechSynthesis.cancel();
     setInProgress(false);
