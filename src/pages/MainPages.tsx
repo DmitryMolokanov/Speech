@@ -40,16 +40,11 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         // установить слово, которое будет отображено
         setWord(result[0].word);
         // проверить и установить озвучку слова
-        if (result[0].phonetics.length > 0) {
-          result[0].phonetics.some((el) => {
-            if (el.audio) return setWordAudio(el.audio);
-          });
-        } else {
-          const speackDefinition = new SpeechSynthesisUtterance(arrWord[index]);
-          speackDefinition.lang = "en-US";
-          speackDefinition.rate = 0.8;
-          speechSynthesis.speak(speackDefinition);
-        }
+
+        const speackDefinition = new SpeechSynthesisUtterance(arrWord[index]);
+        speackDefinition.lang = "en-US";
+        speackDefinition.rate = 0.8;
+        speechSynthesis.speak(speackDefinition);
 
         // следующая итерация
         const definition = result[0].meanings[0].definitions[0].definition;
@@ -66,14 +61,15 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
 
         // динамическое изменение интервала
         intervalTime = Math.ceil(definitionLength / 17 + 2) * 1000;
-        interval = setInterval(intervalFunction, intervalTime);
+        // установка значения для очистка интервала
         clearInterval(interval);
-      } else { setInProgress(false); }
+        interval = setInterval(intervalFunction, intervalTime);
+      } else {
+        setInProgress(false);
+      }
     };
 
     let interval = setInterval(intervalFunction, intervalTime);
-    // установка значения для очистка интервала
-    setMainInterval(interval);
   };
 
   const start = async () => {
@@ -84,16 +80,12 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
     );
     const result: IWord[] = await response.json();
     setWord(result[0].word);
-    if (result[0].phonetics.length > 0) {
-      result[0].phonetics.some((el) => {
-        if (el.audio) return setWordAudio(el.audio);
-      });
-    } else {
-      const speackDefinition = new SpeechSynthesisUtterance(arrWord[0]);
-      speackDefinition.lang = "en-US";
-      speackDefinition.rate = 0.8;
-      speechSynthesis.speak(speackDefinition);
-    }
+
+    const speackDefinition = new SpeechSynthesisUtterance(arrWord[0]);
+    speackDefinition.lang = "en-US";
+    speackDefinition.rate = 0.8;
+    speechSynthesis.speak(speackDefinition);
+
     const definition = result[0].meanings[0].definitions[0].definition;
     setDefinitions(definition);
     setTimeout(() => {
