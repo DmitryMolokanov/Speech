@@ -28,7 +28,7 @@ const Header = () => {
         </Toolbar>
       </AppBar>
 
-      <Drawer open={isMenu} onClose={() => setIsMenu(false)} anchor={"right"}>
+      <Drawer open={isMenu} onClose={() => setIsMenu(false)} anchor={"right"} sx={{ m: 5 }}>
         <List>
           <ListItem>
             <Button component={RouterLink} to="/" sx={{ fontWeight: 700 }}>

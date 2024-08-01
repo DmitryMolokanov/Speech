@@ -43,3 +43,11 @@
   color: white;
   background-color: rgb(34, 118, 197);
 }
+.form-collection__input-container {
+  width: calc(100% + 50px);
+  height: 72vh;
+  overflow: scroll;
+}
+.form-input{
+  width: calc(100% - 50px);
+}

@@ -94,7 +94,7 @@ const CollectionsContainer = ({
             </Box>
           );
         })}
-      <Modal open={isModal} onClose={() => setIsModal(false)}>
+      <Modal open={isModal} onClose={() => setIsModal(false)} style={{ height: 'fit-content' }}>
         <CreateCollectionForm
           collections={collections}
           setCollections={setCollections}

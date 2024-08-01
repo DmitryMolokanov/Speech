@@ -72,7 +72,7 @@ const Details = ({ info }: DetailsProps) => {
                           color={"#27292b"}
                         >
                           {definition.example ||
-                          definition.synonyms.length > 0 ? (
+                            definition.synonyms.length > 0 ? (
                             <IconButton className="details-add-materials">
                               <PostAddIcon />
                             </IconButton>

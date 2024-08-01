@@ -225,52 +225,53 @@ const CreateCollectionForm = ({
         ) : (
           <Typography className="form-collection-title">{title}</Typography>
         )}
-        {curCollection?.words.map((word, index) => {
-          return (
-            // инпут
-            <TextField
-              className="form-input"
-              label={"word"}
-              size="small"
-              sx={{ mt: 1 }}
-              value={word}
-              autoFocus={true}
-              onChange={(e) => handleChange(e, index)}
-              onBlur={() => {
-                checkWord(word);
-              }}
-              onFocus={() => {
-                focusOnIncorrect(word);
-              }}
-              onTouchMove={(e) => handleTouchMove(e)}
-              onTouchEnd={(e) => {
-                handleTouchEnd(e);
-              }}
-              style={
-                index === indexGap ? { marginTop: "40px" } : { marginTop: "" }
-              }
-              error={errWord.includes(word)}
-              helperText={errWord.includes(word) ? "incorrect word" : ""}
-              InputProps={{
-                // кнопка удаления
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {curCollection.words.length > 1 ? (
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => removeWord(word, index)}
-                      >
-                        <Delete />
-                      </IconButton>
-                    ) : null}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          );
-        })}
-
+        <div className="form-collection__input-container">
+          {curCollection?.words.map((word, index) => {
+            return (
+              // инпут
+              <TextField
+                className="form-input"
+                label={"word"}
+                size="small"
+                sx={{ mt: 1 }}
+                value={word}
+                autoFocus={true}
+                onChange={(e) => handleChange(e, index)}
+                onBlur={() => {
+                  checkWord(word);
+                }}
+                onFocus={() => {
+                  focusOnIncorrect(word);
+                }}
+                onTouchMove={(e) => handleTouchMove(e)}
+                onTouchEnd={(e) => {
+                  handleTouchEnd(e);
+                }}
+                style={
+                  index === indexGap ? { marginTop: "40px" } : { marginTop: "" }
+                }
+                error={errWord.includes(word)}
+                helperText={errWord.includes(word) ? "incorrect word" : ""}
+                InputProps={{
+                  // кнопка удаления
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {curCollection.words.length > 1 ? (
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => removeWord(word, index)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      ) : null}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            );
+          })}
+        </div>
         <Box
           component={"div"}
           sx={{ mt: 3 }}
