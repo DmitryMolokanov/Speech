@@ -7,9 +7,10 @@ interface ButtonsProps {
   stop: () => void;
   loop: () => void;
   isLoop: boolean;
+  startBtnAvailable: boolean
 }
 
-const Buttons: FC<ButtonsProps> = ({ start, stop, loop, isLoop }) => {
+const Buttons: FC<ButtonsProps> = ({ start, stop, loop, isLoop, startBtnAvailable }) => {
   return (
     <Box style={{ display: "flex", justifyContent: "space-evenly" }}>
       <Button
@@ -17,6 +18,7 @@ const Buttons: FC<ButtonsProps> = ({ start, stop, loop, isLoop }) => {
         variant="contained"
         size="small"
         startIcon={<PlayCircle />}
+        disabled={!startBtnAvailable}
       >
         start
       </Button>

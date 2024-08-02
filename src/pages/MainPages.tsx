@@ -22,6 +22,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   const [inProgress, setInProgress] = useState(false);
   // отслеживает зацикленность
   const [isLoop, setIsLoop] = useState<boolean>(false);
+  const [startBtnAvailable, setStartBtnAvailable] = useState<boolean>(true)
 
   let interval: any = null
 
@@ -67,7 +68,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
         clearInterval(interval);
         interval = setInterval(intervalFunction, intervalTime);
       } else {
-        console.log('clear')
+        setStartBtnAvailable(true)
         setInProgress(false);
         clearInterval(interval);
       }
@@ -77,6 +78,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
 
   const start = async () => {
     setInProgress(true);
+    setStartBtnAvailable(false)
     // тоже самое что getWord, только для установления дефолтного значения, чтобы не ждать первой итерации интервала.
     const response = await fetch(
       `https://api.dictionaryapi.dev/api/v2/entries/en/${arrWord[0]}`
@@ -101,14 +103,16 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   };
 
   const stop = () => {
+    clearInterval(interval);
+    indexRef.current = arrWord.length
+
     noSleep.disable();
     speechSynthesis.cancel();
     setInProgress(false);
     setIsLoop(false);
     setWord("");
     setDefinitions("");
-    clearInterval(interval);
-    indexRef.current = arrWord.length
+
   };
 
 
@@ -134,7 +138,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
           Word:
         </Word>
         <Definitions word={definitions}>Definitions:</Definitions>
-        <Buttons start={start} stop={stop} loop={loop} isLoop={isLoop} />
+        <Buttons start={start} stop={stop} loop={loop} isLoop={isLoop} startBtnAvailable={startBtnAvailable} />
       </div>
     </div>
   );
