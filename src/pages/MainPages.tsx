@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IWord } from "../types";
 import Header from "../components/Header";
 import Word from "../components/Word";
@@ -18,35 +18,38 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   const [definitions, setDefinitions] = useState("");
   const noSleep = new nosleep();
 
-  const [mainInterval, setMainInterval] = useState<any>();
   // отслеживает начало и окончание воспроизведения
   const [inProgress, setInProgress] = useState(false);
   // отслеживает зацикленность
   const [isLoop, setIsLoop] = useState<boolean>(false);
 
+  let interval: any = null
+
+  const indexRef = useRef(1)
+
   const getWord = () => {
     noSleep.enable();
-    let index = 1;
+    indexRef.current = 1
     let definitionLength = 0;
     let intervalTime = 7000;
     const intervalFunction = async () => {
+      console.log(indexRef.current)
       // проверка, что индекс не больше массива
-      if (index < arrWord.length) {
+      if (indexRef.current < arrWord.length) {
         // получение данных по API
         const response = await fetch(
-          `https://api.dictionaryapi.dev/api/v2/entries/en/${arrWord[index]}`
+          `https://api.dictionaryapi.dev/api/v2/entries/en/${arrWord[indexRef.current]}`
         );
         const result: IWord[] = await response.json();
         // установить слово, которое будет отображено
         setWord(result[0].word);
-        // проверить и установить озвучку слова
 
-        const speackDefinition = new SpeechSynthesisUtterance(arrWord[index]);
+        // проверить и установить озвучку слова
+        const speackDefinition = new SpeechSynthesisUtterance(arrWord[indexRef.current]);
         speackDefinition.lang = "en-US";
         speackDefinition.rate = 0.8;
         speechSynthesis.speak(speackDefinition);
-
-        // следующая итерация
+        // установить описание текста
         const definition = result[0].meanings[0].definitions[0].definition;
         definitionLength = definition.length;
 
@@ -57,19 +60,19 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
           speackDefinition.rate = 0.8;
           speechSynthesis.speak(speackDefinition);
         }, 1000);
-        index++;
-
+        indexRef.current++
         // динамическое изменение интервала
         intervalTime = Math.ceil(definitionLength / 17 + 2) * 1000;
-        // установка значения для очистка интервала
+        // очистить интервал
         clearInterval(interval);
         interval = setInterval(intervalFunction, intervalTime);
       } else {
+        console.log('clear')
         setInProgress(false);
+        clearInterval(interval);
       }
     };
-
-    let interval = setInterval(intervalFunction, intervalTime);
+    interval = setInterval(intervalFunction, intervalTime);
   };
 
   const start = async () => {
@@ -99,13 +102,15 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
 
   const stop = () => {
     noSleep.disable();
-    clearInterval(mainInterval);
     speechSynthesis.cancel();
     setInProgress(false);
     setIsLoop(false);
     setWord("");
     setDefinitions("");
+    clearInterval(interval);
+    indexRef.current = arrWord.length
   };
+
 
   const loop = () => {
     setIsLoop((prev) => !prev);
@@ -114,7 +119,7 @@ const MainPages = ({ arrWord }: MainPagesProps) => {
   // запуск бесконечного повторения
   useEffect(() => {
     if (!inProgress && isLoop) {
-      clearInterval(mainInterval);
+      clearInterval(interval);
       speechSynthesis.cancel();
       start();
     }
